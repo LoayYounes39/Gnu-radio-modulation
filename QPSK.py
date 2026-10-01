@@ -22,6 +22,8 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 import QPSK_epy_block_1 as epy_block_1  # embedded python block
+import osmosdr
+import time
 import sip
 import threading
 
@@ -164,6 +166,18 @@ class QPSK(gr.top_block, Qt.QWidget):
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+        self.osmosdr_sink_0 = osmosdr.sink(
+            args="numchan=" + str(1) + " " + ""
+        )
+        self.osmosdr_sink_0.set_time_unknown_pps(osmosdr.time_spec_t())
+        self.osmosdr_sink_0.set_sample_rate(10e6)
+        self.osmosdr_sink_0.set_center_freq(10e6, 0)
+        self.osmosdr_sink_0.set_freq_corr(0, 0)
+        self.osmosdr_sink_0.set_gain(10, 0)
+        self.osmosdr_sink_0.set_if_gain(20, 0)
+        self.osmosdr_sink_0.set_bb_gain(20, 0)
+        self.osmosdr_sink_0.set_antenna('', 0)
+        self.osmosdr_sink_0.set_bandwidth(0, 0)
         self.epy_block_1 = epy_block_1.blk(echantillons_sec=Rs)
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, Rs, True, 0 if "auto" == "auto" else max( int(float(0.1) * Rs) if "auto" == "time" else int(0.1), 1) )
         self.blocks_repeat_0 = blocks.repeat(gr.sizeof_gr_complex*1, 30)
@@ -183,6 +197,7 @@ class QPSK(gr.top_block, Qt.QWidget):
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 0))
         self.connect((self.analog_sig_source_x_0_0, 0), (self.blocks_multiply_xx_0_1, 0))
         self.connect((self.blocks_add_xx_0, 0), (self.blocks_throttle2_0, 0))
+        self.connect((self.blocks_add_xx_0, 0), (self.osmosdr_sink_0, 0))
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_float_to_complex_0, 0))
         self.connect((self.blocks_complex_to_float_0, 1), (self.blocks_float_to_complex_0_0, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_multiply_xx_0, 1))
