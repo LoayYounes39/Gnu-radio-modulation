@@ -6,16 +6,15 @@ class blk(gr.sync_block):
         gr.sync_block.__init__(
             self,
             name='Mapping Phase QPSK',
-            in_sig=None,
+            in_sig=[np.int32],      
             out_sig=[np.complex64]
         )
-        self.symbols = [1+1j, -1+1j, 1-1j, -1-1j]
+        self.symbols = [1+1j, -1+1j, 1-1j, -1-1j] 
 
     def work(self, input_items, output_items):
-        out = output_items[0]
-        n = len(out)
-        index = 0
-        for i in range(n):
-            out[i] = self.symbols[index]
-            index = (index + 1) % len(self.symbols)
+        in0 = input_items[0]  
+        out = output_items[0]         
+        for i in range(len(in0)):
+            out[i] = in0[i]
+            
         return len(out)

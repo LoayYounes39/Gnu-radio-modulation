@@ -63,7 +63,7 @@ class QPSK(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.Fs = Fs = 17000
+        self.Fs = Fs = 50
         self.Rs = Rs = 32000
         self.Fc = Fc = Fs
 
@@ -79,7 +79,7 @@ class QPSK(gr.top_block, Qt.QWidget):
             None # parent
         )
         self.qtgui_time_sink_x_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
+        self.qtgui_time_sink_x_0.set_y_axis(-4, 4)
 
         self.qtgui_time_sink_x_0.set_y_label('Amplitude', "")
 
@@ -164,9 +164,51 @@ class QPSK(gr.top_block, Qt.QWidget):
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+        self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
+            1024, #size
+            "", #name
+            1, #number of inputs
+            None # parent
+        )
+        self.qtgui_const_sink_x_0.set_update_time(0.10)
+        self.qtgui_const_sink_x_0.set_y_axis((-2), 2)
+        self.qtgui_const_sink_x_0.set_x_axis((-2), 2)
+        self.qtgui_const_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, "")
+        self.qtgui_const_sink_x_0.enable_autoscale(False)
+        self.qtgui_const_sink_x_0.enable_grid(False)
+        self.qtgui_const_sink_x_0.enable_axis_labels(True)
+
+
+        labels = ['', '', '', '', '',
+            '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ["blue", "red", "green", "black", "cyan",
+            "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        styles = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0]
+        markers = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_const_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_const_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_const_sink_x_0.set_line_width(i, widths[i])
+            self.qtgui_const_sink_x_0.set_line_color(i, colors[i])
+            self.qtgui_const_sink_x_0.set_line_style(i, styles[i])
+            self.qtgui_const_sink_x_0.set_line_marker(i, markers[i])
+            self.qtgui_const_sink_x_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
         self.epy_block_1 = epy_block_1.blk(echantillons_sec=Rs)
+        self.blocks_vector_source_x_0 = blocks.vector_source_i((0, 1, 2, 3), True, 1, [])
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, Rs, True, 0 if "auto" == "auto" else max( int(float(0.1) * Rs) if "auto" == "time" else int(0.1), 1) )
-        self.blocks_repeat_0 = blocks.repeat(gr.sizeof_gr_complex*1, 30)
+        self.blocks_repeat_0 = blocks.repeat(gr.sizeof_gr_complex*1, 10)
         self.blocks_multiply_xx_0_1 = blocks.multiply_vcc(1)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_float_to_complex_0_0 = blocks.float_to_complex(1)
@@ -192,7 +234,9 @@ class QPSK(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_repeat_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.blocks_throttle2_0, 0), (self.blocks_repeat_0, 0))
         self.connect((self.blocks_throttle2_0, 0), (self.qtgui_freq_sink_x_0, 0))
+        self.connect((self.blocks_vector_source_x_0, 0), (self.epy_block_1, 0))
         self.connect((self.epy_block_1, 0), (self.blocks_complex_to_float_0, 0))
+        self.connect((self.epy_block_1, 0), (self.qtgui_const_sink_x_0, 0))
 
 
     def closeEvent(self, event):
