@@ -98,7 +98,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [0, 484.0]
+    coordinate: [328, 684.0]
     rotation: 0
     state: enabled
 - name: analog_sig_source_x_0
@@ -157,7 +157,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [744, 576.0]
+    coordinate: [808, 584.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0
@@ -198,7 +198,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [416, 520.0]
+    coordinate: [728, 704.0]
     rotation: 0
     state: enabled
 - name: note_0
@@ -360,10 +360,10 @@ blocks:
     alpha7: '1.0'
     alpha8: '1.0'
     alpha9: '1.0'
-    autoscale: 'False'
+    autoscale: 'True'
     average: '1.0'
     axislabels: 'True'
-    bw: Fs
+    bw: samp_rate
     color1: '"blue"'
     color10: '"dark blue"'
     color2: '"red"'

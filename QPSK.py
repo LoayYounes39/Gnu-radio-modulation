@@ -66,7 +66,7 @@ class QPSK(gr.top_block, Qt.QWidget):
         ##################################################
         self.Fc = Fc = 4000
         self.symbol_rate = symbol_rate = 1000
-        self.samp_rate = samp_rate = 256000
+        self.samp_rate = samp_rate = 128000
         self.Fs = Fs = 4 * Fc
 
         ##################################################
@@ -179,7 +179,7 @@ class QPSK(gr.top_block, Qt.QWidget):
             8192, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
             0, #fc
-            Fs, #bw
+            samp_rate, #bw
             "", #name
             1,
             None # parent
@@ -258,25 +258,25 @@ class QPSK(gr.top_block, Qt.QWidget):
 
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
-        self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_ic([-1, +1], 1)
+        self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_ic([1+1j, 1-1j, -1+1j, -1-1j], 1)
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
-        self.blocks_repeat_0 = blocks.repeat(gr.sizeof_gr_complex*1, (int(samp_rate/symbol_rate)))
-        self.blocks_multiply_xx_0_1 = blocks.multiply_vcc(1)
+        self.blocks_repeat_0_0 = blocks.repeat(gr.sizeof_gr_complex*1, (int(samp_rate/symbol_rate)))
+        self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, Fc, 1, 0, 0)
-        self.analog_random_source_x_0 = blocks.vector_source_i(list(map(int, numpy.random.randint(0, 2, 64))), True)
+        self.analog_random_source_x_0 = blocks.vector_source_i(list(map(int, numpy.random.randint(0, 4, 64))), True)
 
 
         ##################################################
         # Connections
         ##################################################
         self.connect((self.analog_random_source_x_0, 0), (self.digital_chunks_to_symbols_xx_0, 0))
-        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0_1, 0))
-        self.connect((self.blocks_multiply_xx_0_1, 0), (self.blocks_throttle2_0, 0))
-        self.connect((self.blocks_multiply_xx_0_1, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.blocks_repeat_0, 0), (self.blocks_multiply_xx_0_1, 1))
-        self.connect((self.blocks_repeat_0, 0), (self.qtgui_time_sink_x_0_0, 0))
+        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_throttle2_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.blocks_repeat_0_0, 0), (self.blocks_multiply_xx_0, 1))
+        self.connect((self.blocks_repeat_0_0, 0), (self.qtgui_time_sink_x_0_0, 0))
         self.connect((self.blocks_throttle2_0, 0), (self.qtgui_freq_sink_x_0, 0))
-        self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.blocks_repeat_0, 0))
+        self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.blocks_repeat_0_0, 0))
         self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
 
 
@@ -301,7 +301,7 @@ class QPSK(gr.top_block, Qt.QWidget):
 
     def set_symbol_rate(self, symbol_rate):
         self.symbol_rate = symbol_rate
-        self.blocks_repeat_0.set_interpolation((int(self.samp_rate/self.symbol_rate)))
+        self.blocks_repeat_0_0.set_interpolation((int(self.samp_rate/self.symbol_rate)))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -309,8 +309,9 @@ class QPSK(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
-        self.blocks_repeat_0.set_interpolation((int(self.samp_rate/self.symbol_rate)))
+        self.blocks_repeat_0_0.set_interpolation((int(self.samp_rate/self.symbol_rate)))
         self.blocks_throttle2_0.set_sample_rate(self.samp_rate)
+        self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
 
@@ -319,7 +320,6 @@ class QPSK(gr.top_block, Qt.QWidget):
 
     def set_Fs(self, Fs):
         self.Fs = Fs
-        self.qtgui_freq_sink_x_0.set_frequency_range(0, self.Fs)
 
 
 
