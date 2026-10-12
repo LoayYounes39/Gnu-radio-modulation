@@ -124,24 +124,6 @@ blocks:
     coordinate: [528, 364.0]
     rotation: 0
     state: enabled
-- name: blocks_multiply_xx_1
-  id: blocks_multiply_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '2'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1216, 368.0]
-    rotation: 0
-    state: enabled
 - name: blocks_pack_k_bits_bb_0
   id: blocks_pack_k_bits_bb
   parameters:
@@ -156,24 +138,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [360, 600.0]
-    rotation: 0
-    state: enabled
-- name: blocks_repeat_0_0
-  id: blocks_repeat
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    interp: int(samp_rate/symbol_rate)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [912, 464.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0
@@ -223,6 +187,21 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [576, 520.0]
+    rotation: 0
+    state: enabled
+- name: mod1_0
+  id: mod1
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1032, 416.0]
     rotation: 0
     state: enabled
 - name: note_0
@@ -544,7 +523,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [992, 148.0]
+    coordinate: [1280, 108.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0_0
@@ -647,15 +626,14 @@ blocks:
 
 connections:
 - [analog_random_source_x_0, '0', blocks_pack_k_bits_bb_0, '0']
-- [analog_sig_source_x_0, '0', blocks_multiply_xx_1, '0']
-- [blocks_multiply_xx_1, '0', blocks_throttle2_0, '0']
+- [analog_sig_source_x_0, '0', mod1_0, '0']
 - [blocks_pack_k_bits_bb_0, '0', epy_block_1, '0']
-- [blocks_repeat_0_0, '0', blocks_multiply_xx_1, '1']
-- [blocks_repeat_0_0, '0', qtgui_time_sink_x_0, '0']
 - [blocks_throttle2_0, '0', qtgui_freq_sink_x_0, '0']
 - [blocks_throttle2_0, '0', qtgui_time_sink_x_0_0, '0']
-- [epy_block_1, '0', blocks_repeat_0_0, '0']
+- [epy_block_1, '0', mod1_0, '1']
 - [epy_block_1, '0', qtgui_const_sink_x_0, '0']
+- [mod1_0, '0', blocks_throttle2_0, '0']
+- [mod1_0, '1', qtgui_time_sink_x_0, '0']
 
 metadata:
   file_format: 1

@@ -50,7 +50,6 @@ sys.path.append(os.environ.get('GRC_HIER_PATH', get_state_directory()))
 from gnuradio import analog
 from gnuradio import blocks
 import numpy
-from gnuradio import digital
 from gnuradio import gr
 from gnuradio.filter import firdes
 from gnuradio.fft import window
@@ -60,6 +59,8 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from mod1 import mod1  # grc-generated hier_block
+from new_hier import new_hier  # grc-generated hier_block
+import QPSK_epy_block_1 as epy_block_1  # embedded python block
 import sip
 import threading
 
@@ -103,7 +104,7 @@ class QPSK(gr.top_block, Qt.QWidget):
         ##################################################
         self.Fc = Fc = 4000
         self.symbol_rate = symbol_rate = 1000
-        self.samp_rate = samp_rate = 256000
+        self.samp_rate = samp_rate = 128000
         self.Fs = Fs = 4 * Fc
 
         ##################################################
@@ -113,8 +114,8 @@ class QPSK(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
             8192, #size
             samp_rate, #samp_rate
-            'Symboles (Sources12-Entree, Sources34-Après Démodulation )', #name
-            2, #number of inputs
+            'Time Sink Partie I et Q', #name
+            1, #number of inputs
             None # parent
         )
         self.qtgui_time_sink_x_0_0.set_update_time(0.10)
@@ -145,7 +146,7 @@ class QPSK(gr.top_block, Qt.QWidget):
             -1, -1, -1, -1, -1]
 
 
-        for i in range(4):
+        for i in range(2):
             if len(labels[i]) == 0:
                 if (i % 2 == 0):
                     self.qtgui_time_sink_x_0_0.set_line_label(i, "Re{{Data {0}}}".format(i/2))
@@ -164,8 +165,8 @@ class QPSK(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
             8192, #size
             samp_rate, #samp_rate
-            'Signal après modulation', #name
-            1, #number of inputs
+            'Symboles (Sources12-Entree, Sources34-Après Démodulation )', #name
+            2, #number of inputs
             None # parent
         )
         self.qtgui_time_sink_x_0.set_update_time(0.10)
@@ -196,7 +197,7 @@ class QPSK(gr.top_block, Qt.QWidget):
             -1, -1, -1, -1, -1]
 
 
-        for i in range(2):
+        for i in range(4):
             if len(labels[i]) == 0:
                 if (i % 2 == 0):
                     self.qtgui_time_sink_x_0.set_line_label(i, "Re{{Data {0}}}".format(i/2))
@@ -225,7 +226,7 @@ class QPSK(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0.set_y_axis((-140), 10)
         self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
         self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
-        self.qtgui_freq_sink_x_0.enable_autoscale(True)
+        self.qtgui_freq_sink_x_0.enable_autoscale(False)
         self.qtgui_freq_sink_x_0.enable_grid(False)
         self.qtgui_freq_sink_x_0.set_fft_average(1.0)
         self.qtgui_freq_sink_x_0.enable_axis_labels(True)
@@ -265,7 +266,7 @@ class QPSK(gr.top_block, Qt.QWidget):
         self.qtgui_const_sink_x_0.set_x_axis((-2), 2)
         self.qtgui_const_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, "")
         self.qtgui_const_sink_x_0.enable_autoscale(False)
-        self.qtgui_const_sink_x_0.enable_grid(False)
+        self.qtgui_const_sink_x_0.enable_grid(True)
         self.qtgui_const_sink_x_0.enable_axis_labels(True)
 
 
@@ -295,30 +296,30 @@ class QPSK(gr.top_block, Qt.QWidget):
 
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
+        self.new_hier_0 = new_hier()
         self.mod1_0 = mod1()
-        self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_ic([-1, +1], 1)
+        self.epy_block_1 = epy_block_1.blk()
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
-        self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
-        self.blocks_conjugate_cc_0 = blocks.conjugate_cc()
+        self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(4)
         self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, Fc, 1, 0, 0)
-        self.analog_random_source_x_0 = blocks.vector_source_i(list(map(int, numpy.random.randint(0, 2, 64))), True)
+        self.analog_random_source_x_0 = blocks.vector_source_b(list(map(int, numpy.random.randint(0, 2, 1024))), True)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_random_source_x_0, 0), (self.digital_chunks_to_symbols_xx_0, 0))
-        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_conjugate_cc_0, 0))
+        self.connect((self.analog_random_source_x_0, 0), (self.blocks_pack_k_bits_bb_0, 0))
         self.connect((self.analog_sig_source_x_0, 0), (self.mod1_0, 0))
-        self.connect((self.blocks_conjugate_cc_0, 0), (self.blocks_multiply_xx_0, 1))
-        self.connect((self.blocks_multiply_xx_0, 0), (self.qtgui_time_sink_x_0_0, 1))
+        self.connect((self.analog_sig_source_x_0, 0), (self.new_hier_0, 0))
+        self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.epy_block_1, 0))
         self.connect((self.blocks_throttle2_0, 0), (self.qtgui_freq_sink_x_0, 0))
-        self.connect((self.blocks_throttle2_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.mod1_0, 1))
-        self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
-        self.connect((self.mod1_0, 0), (self.blocks_multiply_xx_0, 0))
+        self.connect((self.blocks_throttle2_0, 0), (self.qtgui_time_sink_x_0_0, 0))
+        self.connect((self.epy_block_1, 0), (self.mod1_0, 1))
+        self.connect((self.epy_block_1, 0), (self.qtgui_const_sink_x_0, 0))
         self.connect((self.mod1_0, 0), (self.blocks_throttle2_0, 0))
-        self.connect((self.mod1_0, 1), (self.qtgui_time_sink_x_0_0, 0))
+        self.connect((self.mod1_0, 0), (self.new_hier_0, 1))
+        self.connect((self.mod1_0, 1), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.new_hier_0, 0), (self.qtgui_time_sink_x_0, 1))
 
 
     def closeEvent(self, event):

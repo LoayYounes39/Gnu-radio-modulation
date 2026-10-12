@@ -124,24 +124,6 @@ blocks:
     coordinate: [528, 156.0]
     rotation: 0
     state: enabled
-- name: blocks_multiply_xx_0
-  id: blocks_multiply_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '2'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1104, 200.0]
-    rotation: 0
-    state: enabled
 - name: blocks_pack_k_bits_bb_0
   id: blocks_pack_k_bits_bb
   parameters:
@@ -156,24 +138,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [360, 600.0]
-    rotation: 0
-    state: enabled
-- name: blocks_repeat_0_0
-  id: blocks_repeat
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    interp: int(samp_rate/symbol_rate)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [736, 368.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0
@@ -215,6 +179,21 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [440, 480.0]
+    rotation: 0
+    state: enabled
+- name: mod1_0
+  id: mod1
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [984, 200.0]
     rotation: 0
     state: enabled
 - name: note_0
@@ -639,15 +618,14 @@ blocks:
 
 connections:
 - [analog_random_source_x_0, '0', blocks_pack_k_bits_bb_0, '0']
-- [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '0']
-- [blocks_multiply_xx_0, '0', blocks_throttle2_0, '0']
-- [blocks_multiply_xx_0, '0', qtgui_time_sink_x_0, '0']
+- [analog_sig_source_x_0, '0', mod1_0, '0']
 - [blocks_pack_k_bits_bb_0, '0', digital_chunks_to_symbols_xx_0, '0']
-- [blocks_repeat_0_0, '0', blocks_multiply_xx_0, '1']
-- [blocks_repeat_0_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_throttle2_0, '0', qtgui_freq_sink_x_0, '0']
-- [digital_chunks_to_symbols_xx_0, '0', blocks_repeat_0_0, '0']
+- [digital_chunks_to_symbols_xx_0, '0', mod1_0, '1']
 - [digital_chunks_to_symbols_xx_0, '0', qtgui_const_sink_x_0, '0']
+- [mod1_0, '0', blocks_throttle2_0, '0']
+- [mod1_0, '0', qtgui_time_sink_x_0, '0']
+- [mod1_0, '1', qtgui_time_sink_x_0_0, '0']
 
 metadata:
   file_format: 1
