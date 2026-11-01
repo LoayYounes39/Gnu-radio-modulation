@@ -1,0 +1,223 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: psk8_flowgraph
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: psk8
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '32000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 12]
+    rotation: 0
+    state: enabled
+- name: blocks_throttle2_0
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    limit: auto
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1152, 156.0]
+    rotation: 0
+    state: enabled
+- name: blocks_vector_source_x_0
+  id: blocks_vector_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repeat: 'True'
+    tags: '[]'
+    type: byte
+    vector: (0, 1, 2, 3, 4, 5, 6, 7)
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 164.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nEmbedded Python Block - 8-PSK Modulator\nConvertit des\
+      \ symboles (0 \xE0 7) en symboles 8-PSK\n\"\"\"\n\nimport numpy as np\nfrom\
+      \ gnuradio import gr\n\nclass blk(gr.sync_block):\n    \"\"\"Bloc de modulation\
+      \ 8-PSK\"\"\"\n\n    def __init__(self):\n        gr.sync_block.__init__(\n\
+      \            self,\n            name='8-PSK Modulator',\n            in_sig=[np.uint8],\n\
+      \            out_sig=[np.complex64]\n        )\n\n    def work(self, input_items,\
+      \ output_items):\n        \"\"\"Convertit les symboles en 8-PSK\"\"\"\n    \
+      \    symbols = input_items[0]\n        out = output_items[0]\n        \n   \
+      \     # 8-PSK : 8 points sur un cercle \xE0 45\xB0 d'\xE9cart\n        constellation\
+      \ = [\n            complex(1.0, 0.0),           # 0 : 0\xB0\n            complex(0.707,\
+      \ 0.707),       # 1 : 45\xB0\n            complex(0.0, 1.0),           # 2 :\
+      \ 90\xB0\n            complex(-0.707, 0.707),      # 3 : 135\xB0\n         \
+      \   complex(-1.0, 0.0),          # 4 : 180\xB0\n            complex(-0.707,\
+      \ -0.707),     # 5 : 225\xB0\n            complex(0.0, -1.0),          # 6 :\
+      \ 270\xB0\n            complex(0.707, -0.707)       # 7 : 315\xB0\n        ]\n\
+      \        \n        for i in range(len(symbols)):\n            sym = symbols[i]\
+      \ % 8\n            out[i] = constellation[sym]\n        \n        return len(symbols)\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    _io_cache: ('8-PSK Modulator', 'blk', [], [('0', 'byte', 1)], [('0', 'complex',
+      1)], 'Bloc de modulation 8-PSK', [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [792, 208.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_const_sink_x_0
+  id: qtgui_const_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '0'
+    marker10: '0'
+    marker2: '0'
+    marker3: '0'
+    marker4: '0'
+    marker5: '0'
+    marker6: '0'
+    marker7: '0'
+    marker8: '0'
+    marker9: '0'
+    name: '""'
+    nconnections: '1'
+    size: '1024'
+    style1: '0'
+    style10: '0'
+    style2: '0'
+    style3: '0'
+    style4: '0'
+    style5: '0'
+    style6: '0'
+    style7: '0'
+    style8: '0'
+    style9: '0'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    xmax: '2'
+    xmin: '-2'
+    ymax: '2'
+    ymin: '-2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1400, 332.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_throttle2_0, '0', qtgui_const_sink_x_0, '0']
+- [blocks_vector_source_x_0, '0', epy_block_0, '0']
+- [epy_block_0, '0', blocks_throttle2_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.12.0

@@ -11,7 +11,7 @@ options:
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: QPSK
+    id: qam16_flowgraph
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -22,7 +22,7 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: Not titled yet
+    title: QAM16 Modulation
     window_size: (1000,1000)
   states:
     bus_sink: false
@@ -33,31 +33,7 @@ options:
     state: enabled
 
 blocks:
-- name: Fc
-  id: variable
-  parameters:
-    comment: ''
-    value: Fs
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [264, 24.0]
-    rotation: 0
-    state: enabled
-- name: Fs
-  id: variable
-  parameters:
-    comment: ''
-    value: '17000'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [376, 24.0]
-    rotation: 0
-    state: enabled
-- name: Rs
+- name: samp_rate
   id: variable
   parameters:
     comment: ''
@@ -66,27 +42,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [480, 24.0]
-    rotation: 0
-    state: enabled
-- name: analog_random_source_x_0
-  id: analog_random_source_x
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    max: '4'
-    maxoutbuf: '0'
-    min: '0'
-    minoutbuf: '0'
-    num_samps: '16000'
-    repeat: 'True'
-    type: int
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [0, 484.0]
+    coordinate: [200, 12]
     rotation: 0
     state: enabled
 - name: analog_sig_source_x_0
@@ -96,12 +52,12 @@ blocks:
     alias: ''
     amp: '1'
     comment: ''
-    freq: Fc
+    freq: '1000'
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
     phase: '0'
-    samp_rate: Rs
+    samp_rate: samp_rate
     showports: 'False'
     type: complex
     waveform: analog.GR_COS_WAVE
@@ -109,51 +65,10 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [272, 100.0]
+    coordinate: [704, 376.0]
     rotation: 0
     state: enabled
-- name: analog_sig_source_x_0_0
-  id: analog_sig_source_x
-  parameters:
-    affinity: ''
-    alias: ''
-    amp: '1'
-    comment: ''
-    freq: Fc
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    offset: '0'
-    phase: '0'
-    samp_rate: Rs
-    showports: 'False'
-    type: complex
-    waveform: analog.GR_SIN_WAVE
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [424, 484.0]
-    rotation: 0
-    state: enabled
-- name: blocks_add_xx_0
-  id: blocks_add_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '2'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1080, 176.0]
-    rotation: 0
-    state: enabled
-- name: blocks_complex_to_float_0
+- name: blocks_complex_to_float_1
   id: blocks_complex_to_float
   parameters:
     affinity: ''
@@ -166,39 +81,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [456, 256.0]
-    rotation: 0
-    state: enabled
-- name: blocks_float_to_complex_0
-  id: blocks_float_to_complex
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [672, 136.0]
-    rotation: 0
-    state: enabled
-- name: blocks_float_to_complex_0_0
-  id: blocks_float_to_complex
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [632, 408.0]
+    coordinate: [1248, 416.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_xx_0
@@ -216,25 +99,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [936, 72.0]
-    rotation: 0
-    state: enabled
-- name: blocks_multiply_xx_0_1
-  id: blocks_multiply_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '2'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [776, 288.0]
+    coordinate: [1064, 408.0]
     rotation: 0
     state: enabled
 - name: blocks_repeat_0
@@ -243,16 +108,16 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    interp: '30'
+    interp: '100'
     maxoutbuf: '0'
     minoutbuf: '0'
-    type: complex
+    type: byte
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1408, 184.0]
+    coordinate: [328, 208.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0
@@ -266,63 +131,74 @@ blocks:
     maximum: '0.1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: Rs
+    samples_per_second: samp_rate
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1200, 176.0]
+    coordinate: [912, 188.0]
     rotation: 0
     state: enabled
-- name: digital_chunks_to_symbols_xx_0
-  id: digital_chunks_to_symbols_xx
+- name: blocks_vector_source_x_0
+  id: blocks_vector_source_x
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    dimension: '2'
-    in_type: int
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_ports: '1'
-    out_type: complex
-    symbol_table: ''
+    repeat: 'True'
+    tags: '[]'
+    type: byte
+    vector: '[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]'
+    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [272, 352.0]
+    coordinate: [16, 188.0]
     rotation: 0
     state: enabled
-- name: epy_block_1
+- name: epy_block_0
   id: epy_block
   parameters:
-    _source_code: "import numpy as np\nfrom gnuradio import gr\n\nclass blk(gr.sync_block):\n\
-      \    def __init__(self, echantillons_sec=128):\n        gr.sync_block.__init__(\n\
-      \            self,\n            name='Mapping Phase QPSK',\n            in_sig=[np.complex64],\n\
+    _source_code: "\"\"\"\nEmbedded Python Block - 16-QAM Modulator\nConvertit des\
+      \ symboles (0 \xE0 15) en symboles 16-QAM\n\"\"\"\n\nimport numpy as np\nfrom\
+      \ gnuradio import gr\n\nclass blk(gr.sync_block):\n    \"\"\"Bloc de modulation\
+      \ 16-QAM\"\"\"\n\n    def __init__(self):\n        gr.sync_block.__init__(\n\
+      \            self,\n            name='16-QAM Modulator',\n            in_sig=[np.uint8],\n\
       \            out_sig=[np.complex64]\n        )\n\n    def work(self, input_items,\
-      \ output_items):\n        out = output_items[0]\n        n = len(out)\n    \
-      \    index = 0\n        for i in range(n):\n            out[i] = self.symbols[index]\n\
-      \            index = index + 1\n        return len(out)\n"
+      \ output_items):\n        \"\"\"Convertit les symboles en 16-QAM\"\"\"\n   \
+      \     symbols = input_items[0]\n        out = output_items[0]\n        \n  \
+      \      # Niveaux d'amplitude pour 16-QAM\n        # -3, -1, +1, +3\n       \
+      \ # Normalis\xE9s pour avoir une puissance moyenne = 1\n        levels = [-3.0,\
+      \ -1.0, 1.0, 3.0]\n        \n        # Table de mapping 16-QAM (grille 4x4)\n\
+      \        # Chaque symbole (0-15) correspond \xE0 une combinaison (I, Q)\n  \
+      \      constellation = []\n        for i in range(4):      # Pour chaque niveau\
+      \ I\n            for q in range(4):  # Pour chaque niveau Q\n              \
+      \  constellation.append(complex(levels[i], levels[q]))\n        \n        #\
+      \ Normalisation (puissance moyenne = 1)\n        constellation = np.array(constellation)\
+      \ / np.sqrt(10.0)\n        \n        for i in range(len(symbols)):\n       \
+      \     sym = symbols[i] % 16\n            out[i] = constellation[sym]\n     \
+      \   \n        return len(symbols)"
     affinity: ''
     alias: ''
     comment: ''
-    echantillons_sec: Rs
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
-    _io_cache: ('Mapping Phase QPSK', 'blk', [('echantillons_sec', '128')], [('0',
-      'complex', 1)], [('0', 'complex', 1)], '', [])
+    _io_cache: ('16-QAM Modulator', 'blk', [], [('0', 'byte', 1)], [('0', 'complex',
+      1)], 'Bloc de modulation 16-QAM', [])
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 264.0]
+    coordinate: [576, 216.0]
     rotation: 0
     state: enabled
-- name: qtgui_freq_sink_x_0
-  id: qtgui_freq_sink_x
+- name: qtgui_const_sink_x_1
+  id: qtgui_const_sink_x
   parameters:
     affinity: ''
     alias: ''
@@ -337,9 +213,7 @@ blocks:
     alpha8: '1.0'
     alpha9: '1.0'
     autoscale: 'False'
-    average: '1.0'
     axislabels: 'True'
-    bw: Fs
     color1: '"blue"'
     color10: '"dark blue"'
     color2: '"red"'
@@ -351,36 +225,48 @@ blocks:
     color8: '"dark red"'
     color9: '"dark green"'
     comment: ''
-    ctrlpanel: 'False'
-    fc: '0'
-    fftsize: '8192'
-    freqhalf: 'True'
     grid: 'False'
     gui_hint: ''
-    label: Relative Gain
     label1: ''
-    label10: ''''''
-    label2: ''''''
-    label3: ''''''
-    label4: ''''''
-    label5: ''''''
-    label6: ''''''
-    label7: ''''''
-    label8: ''''''
-    label9: ''''''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
     legend: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
+    marker1: '0'
+    marker10: '0'
+    marker2: '0'
+    marker3: '0'
+    marker4: '0'
+    marker5: '0'
+    marker6: '0'
+    marker7: '0'
+    marker8: '0'
+    marker9: '0'
     name: '""'
     nconnections: '1'
-    norm_window: 'False'
-    showports: 'False'
+    size: '4096'
+    style1: '0'
+    style10: '0'
+    style2: '0'
+    style3: '0'
+    style4: '0'
+    style5: '0'
+    style6: '0'
+    style7: '0'
+    style8: '0'
+    style9: '0'
     tr_chan: '0'
     tr_level: '0.0'
     tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
     tr_tag: '""'
     type: complex
-    units: dB
     update_time: '0.10'
     width1: '1'
     width10: '1'
@@ -392,14 +278,15 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    wintype: window.WIN_BLACKMAN_hARRIS
-    ymax: '10'
-    ymin: '-140'
+    xmax: '2'
+    xmin: '-2'
+    ymax: '2'
+    ymin: '-2'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1648, 276.0]
+    coordinate: [1224, 76.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0
@@ -455,10 +342,10 @@ blocks:
     marker7: '-1'
     marker8: '-1'
     marker9: '-1'
-    name: Time Sink Partie I et Q
-    nconnections: '1'
-    size: '8192'
-    srate: Rs
+    name: '""'
+    nconnections: '2'
+    size: '1024'
+    srate: samp_rate
     stemplot: 'False'
     style1: '1'
     style10: '1'
@@ -476,7 +363,7 @@ blocks:
     tr_mode: qtgui.TRIG_MODE_FREE
     tr_slope: qtgui.TRIG_SLOPE_POS
     tr_tag: '""'
-    type: complex
+    type: float
     update_time: '0.10'
     width1: '1'
     width10: '1'
@@ -496,26 +383,20 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1640, 140.0]
+    coordinate: [1520, 404.0]
     rotation: 0
     state: enabled
 
 connections:
-- [analog_random_source_x_0, '0', digital_chunks_to_symbols_xx_0, '0']
-- [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '0']
-- [analog_sig_source_x_0_0, '0', blocks_multiply_xx_0_1, '0']
-- [blocks_add_xx_0, '0', blocks_throttle2_0, '0']
-- [blocks_complex_to_float_0, '0', blocks_float_to_complex_0, '0']
-- [blocks_complex_to_float_0, '1', blocks_float_to_complex_0_0, '0']
-- [blocks_float_to_complex_0, '0', blocks_multiply_xx_0, '1']
-- [blocks_float_to_complex_0_0, '0', blocks_multiply_xx_0_1, '1']
-- [blocks_multiply_xx_0, '0', blocks_add_xx_0, '0']
-- [blocks_multiply_xx_0_1, '0', blocks_add_xx_0, '1']
-- [blocks_repeat_0, '0', qtgui_time_sink_x_0, '0']
-- [blocks_throttle2_0, '0', blocks_repeat_0, '0']
-- [blocks_throttle2_0, '0', qtgui_freq_sink_x_0, '0']
-- [digital_chunks_to_symbols_xx_0, '0', epy_block_1, '0']
-- [epy_block_1, '0', blocks_complex_to_float_0, '0']
+- [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
+- [blocks_complex_to_float_1, '0', qtgui_time_sink_x_0, '0']
+- [blocks_complex_to_float_1, '1', qtgui_time_sink_x_0, '1']
+- [blocks_multiply_xx_0, '0', blocks_complex_to_float_1, '0']
+- [blocks_repeat_0, '0', epy_block_0, '0']
+- [blocks_throttle2_0, '0', blocks_multiply_xx_0, '0']
+- [blocks_throttle2_0, '0', qtgui_const_sink_x_1, '0']
+- [blocks_vector_source_x_0, '0', blocks_repeat_0, '0']
+- [epy_block_0, '0', blocks_throttle2_0, '0']
 
 metadata:
   file_format: 1
