@@ -13,11 +13,12 @@ class blk(gr.sync_block):
     def work(self, input_items, output_items):
         x = input_items[0]
         out = output_items[0]
+        
 
         for i, v in enumerate(x):
-            # les 4 points sont dans les 4 quadrants : decision par le signe de I et de Q
             I = 1 if v.real >= 0 else -1
             Q = 1 if v.imag >= 0 else -1
             out[i] = complex(I, Q)
+
 
         return len(out)
